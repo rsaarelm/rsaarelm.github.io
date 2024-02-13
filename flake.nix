@@ -19,6 +19,7 @@
             act
             linkchecker
             entr
+            caddy
           ];
         });
       });
