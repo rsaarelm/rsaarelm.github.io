@@ -16,7 +16,6 @@
             cargo-outdated
             clippy
             rustfmt
-            act
             linkchecker
             entr
             caddy

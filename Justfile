@@ -16,10 +16,6 @@ build:
 register-githooks:
     git config --local core.hooksPath githooks/
 
-# Run the github workflow locally using Docker and act.
-local-workflow:
-    act -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:rust-latest
-
 # Use local build to publish to gh-pages.
 publish:
     #!/bin/sh
