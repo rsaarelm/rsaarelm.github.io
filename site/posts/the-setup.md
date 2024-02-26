@@ -46,22 +46,22 @@ Use symlinks to point here from home dir.
   * `video/` symlinked at `~/Videos`
   * `doc/` PDF and DjVu books and articles, symlinked at `~/Documents`
     * `3/` CGI and 3D modeling
+    * `adv/` How-to books
     * `biz/` Business
     * `cog/` Cognitive science
     * `design/` Design and writing
     * `eng/` Engineering and architecture
     * `g/` Computing
     * `his/` History
+    * `k/` Military
     * `lit/` Mainstream fiction
       * `sf/` Science fiction
       * `fantasy/` Fantasy and horror
       * `fic/` Internet fics
     * `misc/` Other nonfiction, usually popular books
-    * `mil/` Military
     * `phi/` Philosophy
     * `pol/` Politics and sociology
     * `sci/` Science and mathematics
-    * `skill/` How-to books
     * `tg/` Role-playing games
     * `v/` Video game development
     * `x/` Conspiracy, occult and paranormal
