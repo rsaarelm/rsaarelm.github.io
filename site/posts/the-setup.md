@@ -99,8 +99,6 @@ Configuring hosts to have static IP addresses is annoying, so instead I still us
 * Using [restic](https://restic.net/) to back up `~/hearth`, backup recovery procedures
 * Synchronizing `~/hearth` dirs with [Syncthing](https://syncthing.net/)
 
-## TODO NixOS flake-based OS
-
 ## Programs
 
 * [NixOS Linux](https://nixos.org/) with a [flake-based system configuration](https://github.com/rsaarelm/dotfiles/tree/master/homegit)
