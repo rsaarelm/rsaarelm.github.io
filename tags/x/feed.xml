@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>rsaarelm blog: x</title>
+  <link href="https://rsaarelm.github.io/tags/x/"/>
+  <link href="https://rsaarelm.github.io/tags/x/feed.xml" rel="self"/>
+  <updated>2023-04-15T00:00:00Z</updated>
+  <id>https://rsaarelm.github.io/tags/x/</id>
+  
+  <entry>
+    <title>Lucid dream induction protocol</title>
+    <link href="https://rsaarelm.github.io/lucid-dream-induction-protocol"/>
+    <id>https://rsaarelm.github.io/lucid-dream-induction-protocol</id>
+    <updated>2023-04-15T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry>
+</feed>

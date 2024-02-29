@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+  
+  <title>  Roguelike game architecture in Rust 1 - The utility layer  </title>
+</head>
+
+<body>
+  <div id='main'>
+  <div id='content'>
+
+<header>
+  <a href="/">posts</a>
+  | <a href="/tags/">tags</a>
+  | <a href="/links/">links</a>
+</header>
+
+<h1 class="title">Roguelike game architecture in Rust 1 - The utility layer</h1>
+
+<div><em>Tags:
+<a href="/tags/cs/rust/">cs/rust</a>, <a href="/tags/games/dev/">games/dev</a>, <a href="/tags/deprecated/">deprecated</a>
+| 2015-03-21
+</em></div>
+
+<p>I started looking into Mozilla's <a href="http://www.rust-lang.org/">Rust</a> programming language
+around Summer 2013 and had gotten comfortable enough with it by the
+start of 2014 to start a more focused game development project.
+Currently the project repository is at
+<a href="https://github.com/rsaarelm/magog">https://github.com/rsaarelm/magog</a>.</p>
+<p>The project started out with miscellaneous rendering code and the
+idea of making small test programs for various features and then
+consolidating the code used for them into a library. The more
+librarizable components ended up split into the <a href="https://github.com/rsaarelm/calx">Calx</a>
+grab-bag game library repository.</p>
+<p>The Magog game part is the Generic Fantasy Roguelike that I mess
+with while working on my technology stack.</p>
+<h2>Calx utilities crate</h2>
+<p>Calx utilities are the most generic level of reusable random stuff.</p>
+<p>There's <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/util/src/geom.rs">yet another vector type</a> that uses tuple struct
+syntax for concise literals. I also needed a <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/util/src/primitive.rs">custom
+trait</a> for it to be able to talk about element types you
+can do math on, since the generic math primitive trait containing
+both floats and ints was dropped from the Rust standard libraries at
+some point.</p>
+<p>I also wanted to save a random number generator's internal state in
+my save games to get games that always play the same way with the
+same initial RNG seed. The standard library RNGs don't support
+serialization or state dumping, so I made a <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/util/src/encode_rng.rs">wrapper</a>
+that dumps the RNG's bytes into a serialization container in an
+<code>unsafe</code> block.</p>
+<p>There's a <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/util/src/atlas.rs">texture atlas generator</a> and <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/util/src/img.rs">image
+operations</a> which you can use to set a color key for
+transparent pixels and then strip the fully transparent borders from
+images before packing them into the atlas. This lets me draw my
+sprites in a loose regular grid and then get an efficient atlas
+texture out of them at runtime.</p>
+<p>The game graphics are grayscale pixel art I draw with
+<a href="https://code.google.com/p/grafx2/">grafx2</a> and that gets colorized
+with a single hue when drawn at runtime.</p>
+<p>There's also a compact <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/util/src/dijkstra.rs">implementation</a> of a <a href="http://www.roguebasin.com/index.php?title=The_Incredible_Power_of_Dijkstra_Maps">Dijkstra
+map</a> for in-game pathfinding.</p>
+<h2>Calx rendering backend</h2>
+<p>The rendering backend is implemented on top of <a href="https://github.com/tomaka/glutin">Glutin</a> and
+<a href="https://github.com/tomaka/glium">Glium</a> and is based on the <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/backend/src/canvas.rs"><code>Canvas</code></a> type. An
+instantiated <code>Canvas</code> sets up a window and provides OpenGL shader
+based rendering for the pixel art sprites. Canvas uses a builder
+pattern where you can set up the application properties like window
+size using a fluent API and then provides an iterator interface that
+yields input events and render callbacks. The current iterator
+design is maybe not quite ideal, since it sometimes leads to
+convoluted user code when an input event should lead to an immediate
+action on the render callback, and the user code needs to then set
+up a local flag that will be checked when it receives the next
+render event.</p>
+<p>The primitive draw operation draws textured and vertex-colorized
+triangles using the one atlas texture. All the graphics use the
+single atlas and draw either single-color bitmap sprites or
+solid-color polygons. The <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/backend/src/canvas_util.rs"><code>CanvasUtil</code></a> trait provides
+utility functions like drawing specific sprites or geometric shapes
+that can be implemented on top of the base <code>Canvas</code> interface
+without knowing anything about its internals.</p>
+<p>The backend renders to a texture. To keep the pixel art aesthetics
+consistent, I like having the logical resolution stay constant. The
+target texture is then scaled up to fit the actual window. The
+current design only magnifies the graphics by integer multiples so
+that all the magnified pixels will be the same size. The default
+640x360 resolution is picked to scale neatly into 720p and 1080p TV
+resolutions.</p>
+<p>I use a Colemak keyboard layout, so I need to have the
+position-based QWEASD movement keys be read from the hardware
+keyboard scancodes instead of the layout input. The <a href="https://github.com/rsaarelm/calx/blob/a332c59dde7425b8a1e7bdac535d0cfd7c15f760/backend/src/scancode_windows.rs">scancode
+modules</a>
+store the standard mappings from scancodes to keys for Linux,
+Windows and OS X. I'm not quite sure where I originally got the key
+lists from, possibly from the <a href="http://sourceforge.net/p/dosbox/code-0/HEAD/tree/dosbox/trunk/src/gui/sdl_mapper.cpp">DosBox source
+code</a>.</p>
+<p>The event system is pretty much just implementing my own flavor on
+top of what comes out of Glutin, maybe it would've been better to
+just try to push the scancode translation to Glutin and use Glutin's
+event type directly. On the other hand, I'm not completely sure the
+scancode stuff is completely correct, so I'm wary about pushing it
+into a general-use crate. I don't have a Mac to test the OS X branch
+with for example.</p>
+<p>The backend also renders a variable width bitmap font. There's no
+TTF importer, it's just hand-drawn sprites.</p>
+<p>At this point there's enough machinery to start a window, read user
+input and draw animated colorful graphics and text on the screen.
+Next there needs to be an actual game program that uses this layer.</p>
+  
+  
+  
+  </div>
+  
+  <div id='footer'>
+    <a type="application/atom+xml" rel="alternate" href="/feed.xml"><img src="/feed.png" alt="Atom feed"></a>
+    &nbsp;
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="/by-nc-sa.png" alt="cc-by-sa"></a>
+  
+  </div>
+  
+  </div>
+</body>
+</html>

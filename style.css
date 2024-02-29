@@ -1,0 +1,39 @@
+code { font-family: monospace; }
+pre {
+    margin-left: 1em;
+    max-width: 100%;
+    overflow-x: auto;
+}
+h1 {
+    text-align: center;
+    font-size: 1.5rem;
+}
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+h4 { font-size: 0.90rem; }
+header { text-align: center; }
+ul { list-style: circle; padding-inline-start: 1em; }
+body {
+    background-color: #DDD;
+    font-family: sans-serif;
+    max-width: 40rem;
+    margin: 0 auto;
+    float: none;
+    line-height: 1.4;
+}
+#main {
+    background-color: white;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+.date { color: gray; font-size: smaller; }
+.tag { color: brown; font-size: smaller; }
+.bookmark { list-style-type: none; }
+.bookmarks { padding: 0; }
+.note { margin-left: 1em; }
+.outline {
+  list-style-type: none;
+  padding-left: 1em;
+  margin-left: 0em;
+  text-indent: -1em;
+}

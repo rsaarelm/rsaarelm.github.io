@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+  
+  <title>  Implicit data markup  </title>
+</head>
+
+<body>
+  <div id='main'>
+  <div id='content'>
+
+<header>
+  <a href="/">posts</a>
+  | <a href="/tags/">tags</a>
+  | <a href="/links/">links</a>
+</header>
+
+<h1 class="title">Implicit data markup</h1>
+
+<div><em>Tags:
+<a href="/tags/cs/rust/">cs/rust</a>, <a href="/tags/cs/idm/">cs/idm</a>, <a href="/tags/org/notes/">org/notes</a>
+| 2023-04-22
+</em></div>
+
+<p><strong>tl;dr</strong>: Minimalist, non-self-describing markup and serialization language optimized for human-writability, with an implementation for Rust's Serde, available at <a href="https://github.com/rsaarelm/idm">github</a> and <a href="https://crates.io/crates/idm">crates.io</a>.</p>
+<p>My <a href="/outline-notes-intro">initial note-taking system</a> had a good system for nested, wiki-like note-taking, but it was a bit lacking in any sort of principled metadata system.
+You can do a lot with an uniform structured data syntax, but many of the existing ones are ugly and verbose or just otherwise awkward to type by hand.</p>
+<p>I wanted a notation that's simple to write by hand, does not involve awkward blobs of machine-generated cruft, and generally stays out of your way.
+One example of a syntax getting in your way is how JSON requires you to add quotation marks around every string value.</p>
+<p>S-expressions used in Lisp are a very simple universal data format, but they are formed with parentheses, not with indentation.
+The nested outlines format suggests using a structure based on newlines and semantically significant indentation instead.</p>
+<h2>Outlines as expressions</h2>
+<p>It turns out that there are propositions for S-expressions that use indentation instead of parentheses, like <a href="https://srfi.schemers.org/srfi-49/srfi-49.html">SRFI 49</a>.
+A rough idea is to replace atoms with lines and lists with nested blocks.
+There is a problem though, how do you distinguish <code>((a b) (c d))</code> from <code>(((a b)) ((c d)))</code>?
+The syntax needs some single extra group separator construct to express the double opening parenthesis.
+SRFI 49 uses the keyword <code>group</code> for this, so (as far as I understand it) you'd have</p>
+<pre><code>a b
+c d
+</code></pre>
+<p>and then</p>
+<pre><code>group
+  a b
+group
+  c d
+</code></pre>
+<p>After poking around a bit, I didn't find the direct mapping to S-expressions as quite the right fit.
+Instead, I was looking for something that has the outline types as its initial building block.</p>
+<p>At this point, the idea was starting to become a bit clearer.
+Everything starts with an <em>outline</em> that's a list of <em>items</em>.
+Items are either single <em>lines</em> or <em>sections</em> that consist of a <em>headline</em> and a <em>body</em>.
+Strings in general can be called <em>words</em> if they are nonempty but contain no whitespace,
+<em>lines</em> if they contain no newlines
+and <em>paragraphs</em> otherwise.
+(Empty strings aren't called anything, you can't really express them in this system.)</p>
+<p>There are now three ways to present a sequence.
+A sequence consisting of only of words can be displayed as a single line.
+A sequence consisting of words or lines can be displayed as a block of uniformly indented lines.
+A sequence consisting of paragraphs can be displayed as a list of sections.
+Paragraphs probably aren't section-shaped, so now we're going to need a similar group separator as SRFI 49 had.
+Let's introduce double hyphen (<code>--</code>) as a dummy headline and make the actual paragraph be its body.
+This is now our group separator symbol.
+We'll call sections that have a <code>--</code> headline <em>blocks</em>.
+The double hyphen is also the comment prefix just so I can say I have syntactically significant comments.</p>
+<pre><code>-- Sequence of words on a single line
+one two three
+
+-- Sequence of lines
+--
+  twenty one
+  twenty two
+  twenty three
+
+-- Sequence of sections
+’Twas brillig, and the slithy toves
+  Did gyre and gimble in the wabe:
+All mimsy were the borogoves,
+  And the mome raths outgrabe.
+
+-- Sequence of non-section paragraphs with group separators
+--
+  CARD
+  AREA
+  REAR
+  DART
+--
+  SATOR
+  AREPO
+  TENET
+  OPERA
+  ROTAS
+</code></pre>
+<h2>Implicit data with Serde</h2>
+<p>So now I have something a little like S-expressions, where can I go from here?
+I'm writing programs with Rust, where you usually have a <a href="https://serde.rs/">Serde</a> serializer library that can convert between program data and a data format.
+An important thing with Serde is that you are always deserializing into a known type.
+I figured I could cut some corners on syntax by exploiting knowledge of the expected type when parsing the input.
+At any point, the parser knows two things: What kind of type it expects to read next and what shape of an outline fragment it is looking at.
+If it's expecting a structured type like a vector or a struct, it will try treating the outline fragment as a sequence expression.
+If it's expecting an atomic type like a number or a string, it will read in the outline fragment as a single string and try to convert it into the type.</p>
+<p>Since the deserializer knows what type it expects, the format doesn't need syntax to help it along.
+You can write both the list <code>["a", "b", "c"]</code> and the string <code>"a b c"</code> as just <code>a b c</code>, and it will get parsed correctly according to the expected type.
+As long as you don't need to handle strings that are empty or made of only whitespace, there's no need to have any sort of string quotation syntax.
+Any nonempty, not-only-whitespace string is either a word, a line or a paragraph, and all of those can be delimited with just the whitespace and the group separator.</p>
+<h2>The outline type</h2>
+<p>The initial idea was to read the outline notes into an outline type, and then somehow pick fragments of that and use the Serde type deserializer on them.
+At some point I got thinking.
+The outline itself seems to have a pretty straightforward recursive type, something like this:</p>
+<pre><code>struct Outline(Vec&lt;(String, Outline)&gt;);
+</code></pre>
+<p>("An <em>outline</em> is a sequence of sections, each of which consists of a <em>headline</em> string and an indented <em>body</em> outline.")</p>
+<p>So could I skip having extra machinery for reading in the entire outline and use my Serde library for that as well, given a well-picked type for a whole outline?</p>
+<p>Looking at the proposed outline type, the headline string is the only concrete value there, everything else is structural recursion.
+A regular string type doesn't quite cut it here though, the headlines are special.
+First of all, they have to be <em>lines</em>.
+The headline string must never contain newlines.
+It also mustn't be followed by the body on the same line, even if the headline is just a single word, and the body is another single word.
+Second, I want the outline type to be able to consume and print entire outline files verbatim.
+This means reading in comments and blank lines as well as content.</p>
+<p>Serde is quite rigid about doing anything weird like introducing a second "must be a line, also grabs comments" string type, you get the Rust type model, and that's it, so this was the point where I decided to start doing stupid things to make the cool idea work.
+I hacked up a "raw mode" that's arbitrarily marked with the otherwise mostly useless singleton tuple type <code>(A,)</code>.
+Pairs also get special treatment in parsing.
+Sequences like vectors must be serialized uniformly, either as horizontal lines or vertical blocks, but pairs can be serialized as sections where the first value is the headline and the second value is the body.
+If the pair's first element is in raw mode, the pair <em>must</em> be a section.</p>
+<p>Pair <code>("a", "b")</code> can be serialized as <code>a b</code>, but pair <code>(("a",), "b")</code> must become</p>
+<pre><code>a
+  b
+</code></pre>
+<p>Now we've got the new version of the outline declaration:</p>
+<pre><code>struct Outline(Vec&lt;((String,), Outline)&gt;);
+</code></pre>
+<p>The singleton tuple on the headline string declares raw mode, I do some very hairy work on the Serde code to support the two parsing paths for raw vs non-raw input, and everything is go.
+The serialization type system can now eat entire outline note files and preserve all their structure and content.</p>
+<h2>Metadata in the outlines</h2>
+<p>Okay, this is neat and all, but how do you get from the full outline parsing type into a convention for metadata?
+First question is, what should the metadata look like in notes anyway.
+A whole sub-outline seems like the obvious unit to attach it to, so maybe it should be some sort of header region?</p>
+<pre><code>Note headline
+  --
+    note: This part is the metadata
+    date: 2020-01-02
+    tags: notetaking syntax
+  This is the
+  Note body
+</code></pre>
+<p>That's a bit awkward with the leading <code>--</code>, but looks okay, syntax is pretty minimal.
+I could maybe make it even more minimal, do I really need the colons after the attribute names?
+Attribute sets look like I could parse them with my existing machinery and a type like <code>Vec&lt;(String, String)&gt;</code> (no raw mode this time), but that would not support the colon in the middle.</p>
+<p>In another fit of weirdness, I started thinking of Clojure's <code>:keyword</code> syntax with a colon before the name, much easier to parse since the colon precedes the entire pair rather than showing up in the middle of it, and the awkward initial indentation of the metadata block.
+The end result was the second bit of dedicated IDM syntax that makes it look like struct attributes have Clojure-like keyword syntax while actually having nothing to do with attributes.
+The actual colon-syntax rule in IDM is that a group of consecutive section headlines starting with colons at the start of an outline is treated as an indented sub-outline with an empty headline.</p>
+<p>So we start with the initial idea minus the colons:</p>
+<pre><code>Note headline
+  --
+    note This part is the metadata
+    date 2020-01-02
+    tags notetaking syntax
+  This is the
+  Note body
+</code></pre>
+<p>And apply the colon block syntactic sugar to get:</p>
+<pre><code>Note headline
+  :note This part is the metadata
+  :date 2020-01-02
+  :tags notetaking syntax
+  This is the
+  Note body
+</code></pre>
+<p>This is what metadata looks like then.
+You can now write code to walk your outline type, look for outlines where the first item is a headline-less block, and, well, what do you do with them anyway?
+Since the expected type dictates what we get when we parse the input, parsing the same input into different types can get us different interpretations of it.
+The metadata can be parsed by printing out the outline block containing it and reading it back in into a different type.
+Reading into <code>Vec&lt;(String, String)&gt;</code> is pretty much a catch-all for single-word attributes and the values after them.
+Reading into <code>HashMap&lt;String, String&gt;</code> is mostly the same, except duplicate attributes are no longer allowed (they probably shouldn't be).
+If you have a very good idea what you're expecting, you can read into a struct with the expected attribute names as fields and more specific types as values.</p>
+<p>The map-of-strings is a good middle of the road option, and Serde knows about map types specifically, so IDM has another use of the raw type for this.
+If you have a map type inside the raw mode singleton tuple as the first element of a tuple, the whole tuple will be parsed as an outline with optional metadata.
+Now we can write the final form of the outline type:</p>
+<pre><code>struct AnnotatedOutline(
+  (IndexMap&lt;String, String&gt;,),
+  Vec&lt;((String,), AnnotatedOutline)&gt;);
+</code></pre>
+<p>The initial part reads in the metadata header as a map, and ends up with an empty map if the outline has no metadata.
+The second part is the familiar plain outline inner type again, except now it recurses into another annotated outline instead.</p>
+<p>And that's it, now you can write neat structured data, embed it in your outline notes and read it back, at least if you write your note-parsing tool in Rust.
+Check out the <a href="https://github.com/rsaarelm/idm">Implicit Data Markup</a> project over at GitHub for more details.</p>
+  
+  
+  
+  </div>
+  
+  <div id='footer'>
+    <a type="application/atom+xml" rel="alternate" href="/feed.xml"><img src="/feed.png" alt="Atom feed"></a>
+    &nbsp;
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="/by-nc-sa.png" alt="cc-by-sa"></a>
+  
+  </div>
+  
+  </div>
+</body>
+</html>

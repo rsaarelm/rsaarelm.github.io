@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>rsaarelm blog: links</title>
+  <link href="https://rsaarelm.github.io/links/"/>
+  <link href="https://rsaarelm.github.io/links/feed.xml" rel="self"/>
+  <updated>2023-05-03T08:47:52+0300</updated>
+  <id>https://rsaarelm.github.io/links/</id>
+  
+  <entry>
+    <title>Gwern&#x27;s anime reviews</title>
+    <link href="https://rsaarelm.github.io/links/#CYLh2eYjigfNX0_YeVS_yA"/>
+    <id>https://rsaarelm.github.io/links/#CYLh2eYjigfNX0_YeVS_yA</id>
+    <updated>2010-12-14T00:00:00Z</updated>
+    <summary type="html"><a href='https://gwern.net/review/anime'>Gwern's anime reviews</a></summary>
+  </entry><entry>
+    <title>Reading Struss in Beijing</title>
+    <link href="https://rsaarelm.github.io/links/#4h0tgaagSc1u0Ta17Y4Gog"/>
+    <id>https://rsaarelm.github.io/links/#4h0tgaagSc1u0Ta17Y4Gog</id>
+    <updated>2010-12-17T00:00:00Z</updated>
+    <summary type="html"><a href='https://newrepublic.com/article/79747/reading-leo-strauss-in-beijing-china-marx'>Reading Struss in Beijing</a></summary>
+  </entry><entry>
+    <title>Effective Spaced Repetition</title>
+    <link href="https://rsaarelm.github.io/links/#PC0N4ziA-H3hQ5Cu8fN1Ow"/>
+    <id>https://rsaarelm.github.io/links/#PC0N4ziA-H3hQ5Cu8fN1Ow</id>
+    <updated>2023-04-10T17:07:21+0300</updated>
+    <summary type="html"><a href='https://borretti.me/article/effective-spaced-repetition'>Effective Spaced Repetition</a></summary>
+  </entry><entry>
+    <title>Extracting the Essential Simplicity of the Internet</title>
+    <link href="https://rsaarelm.github.io/links/#vTF59N_1L0k7Gl-4_aG9UA"/>
+    <id>https://rsaarelm.github.io/links/#vTF59N_1L0k7Gl-4_aG9UA</id>
+    <updated>2023-04-11T21:18:59+0300</updated>
+    <summary type="html"><a href='https://doi.org/10.1145/3547137'>Extracting the Essential Simplicity of the Internet</a></summary>
+  </entry><entry>
+    <title>Web of the People</title>
+    <link href="https://rsaarelm.github.io/links/#O2oik4SdbxLW4J_0m0Hbjg"/>
+    <id>https://rsaarelm.github.io/links/#O2oik4SdbxLW4J_0m0Hbjg</id>
+    <updated>2023-04-11T21:19:57+0300</updated>
+    <summary type="html"><a href='https://blog.erlend.sh/web-of-the-people'>Web of the People</a></summary>
+  </entry><entry>
+    <title>The Best of Orion&#x27;s Arm</title>
+    <link href="https://rsaarelm.github.io/links/#cJ2qWUUNTT-qHEpCpR7rbQ"/>
+    <id>https://rsaarelm.github.io/links/#cJ2qWUUNTT-qHEpCpR7rbQ</id>
+    <updated>2023-04-16T09:04:28+0300</updated>
+    <summary type="html"><a href='https://borretti.me/article/best-of-orions-arm'>The Best of Orion's Arm</a></summary>
+  </entry><entry>
+    <title>Rock-paper-scissors RPG alignment</title>
+    <link href="https://rsaarelm.github.io/links/#xMi-b0wSCKo_mTw2MtUamA"/>
+    <id>https://rsaarelm.github.io/links/#xMi-b0wSCKo_mTw2MtUamA</id>
+    <updated>2023-04-21T12:54:35+0300</updated>
+    <summary type="html"><a href='https://discoursedrome.tumblr.com/post/715087471469379584/so-dd-is-alignment-is-famously-dumb-to-the-point'>Rock-paper-scissors RPG alignment</a></summary>
+  </entry><entry>
+    <title>Storytelling — The Penumbra of Mortality</title>
+    <link href="https://rsaarelm.github.io/links/#5RnAmsRixo4oJZPGnP0wBg"/>
+    <id>https://rsaarelm.github.io/links/#5RnAmsRixo4oJZPGnP0wBg</id>
+    <updated>2023-04-21T12:58:05+0300</updated>
+    <summary type="html"><a href='https://www.ribbonfarm.com/2023/04/20/storytelling-the-penumbra-of-mortality/'>Storytelling — The Penumbra of Mortality</a></summary>
+  </entry><entry>
+    <title>The Gostak</title>
+    <link href="https://rsaarelm.github.io/links/#8ahHDJS-28IBGBZX20KOsw"/>
+    <id>https://rsaarelm.github.io/links/#8ahHDJS-28IBGBZX20KOsw</id>
+    <updated>2023-04-21T21:40:24+0300</updated>
+    <summary type="html"><a href='https://if50.substack.com/p/the-gostak'>The Gostak</a></summary>
+  </entry><entry>
+    <title>Suggestivity and Idioms in APL</title>
+    <link href="https://rsaarelm.github.io/links/#b8M0djx11-9kDx9xqIPkig"/>
+    <id>https://rsaarelm.github.io/links/#b8M0djx11-9kDx9xqIPkig</id>
+    <updated>2023-05-03T08:47:52+0300</updated>
+    <summary type="html"><a href='https://www.sacrideo.us/suggestivity-and-idioms-in-apl/'>Suggestivity and Idioms in APL</a></summary>
+  </entry>
+</feed>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+  
+  <title>  Project outlines  </title>
+</head>
+
+<body>
+  <div id='main'>
+  <div id='content'>
+
+<header>
+  <a href="/">posts</a>
+  | <a href="/tags/">tags</a>
+  | <a href="/links/">links</a>
+</header>
+
+<h1 class="title">Project outlines</h1>
+
+<div><em>Tags:
+<a href="/tags/org/outliners/">org/outliners</a>
+| 2023-05-02, updated: 2023-09-20
+</em></div>
+
+<ul class='outline'><li><strong>Project outlines blogpost worksheet</strong><ul class='outline'><li><strong>DONE</strong><ul class='outline'><li>[X] 2023-05-02 Start writing a blog post in outline format instead of regular prose to show what I'm talking about</li><li>[X] 2023-05-02 Extend the blog engine to support outline-format posts</li><li>[X] 2023-05-02 Mark the initial items as done so they show how the "DONE" section gets filled</li><li>[X] 2023-09-20 Update with the oneliner for listing all done items</li></ul></li><li>[_] Explain that the DONE section is generally always kept folded in the editor<ul class='outline'><li>This way it doesn't clutter the view even with long-lived projects that accrue a very lone done-list</li><li>You should have a text editor that can do indentation-based folds if you work with outline notes</li><li>The topmost TODO item can be moved to DONE by just indenting it, no cut-and-paste required</li></ul></li><li>[_] Figure out an order for the tasks so it makes sense to read out linearly</li></ul></li><li><br/></li><li><strong>Sometimes/maybe TODO items</strong><ul class='outline'><li>[_] Turn the gimmick project outline into a regular post<ul class='outline'><li>Readers might have a hard time making sense of the outline format</li></ul></li></ul></li><li><br/></li><li><strong>What's the deal with this anyway?</strong><ul class='outline'><li>This is an example of a TODO list outline structure used for project management<ul class='outline'><li>Also the first blog post using the outline style described in the <a href="/outline-notes-intro/">outline notes</a> post</li></ul></li><li>The top of the worksheet, right below the DONE section is a priorized TODO list</li><li>The top item below the DONE list should be the next action for the project</li><li>If it doesn't look like a viable next action, you need to review and update the list</li><li>Worksheet items below it are straightforward high-priority actions<ul class='outline'><li>They should be small, concrete and easy to start</li></ul></li><li>Future plans go to sections below the worksheet<ul class='outline'><li>These can be much more vague, just a general idea of something to accomplish</li><li>Further details can be written under each task item</li></ul></li><li>Try to keep the top worksheet at 20-30 items max<ul class='outline'><li>If the item list starts growing out of control, they should be delegated to lower sections as future plans</li></ul></li><li>I've been using these since 2020 and they still feel like a good way to plan projects</li></ul></li><li><br/></li><li><strong>Why is this good?</strong><ul class='outline'><li>DONE list forms a record of what you did on the project</li><li>Next actions focus work, you always have a single concrete thing to start working on next</li><li>20-ish item worksheet list is a manageable scratch space for imminent tasks</li><li>Lower document can be an arbitrarily detailed project plan without weighting down the active TODO list</li></ul></li><li><br/></li><li><strong>Summarizing what you've done</strong><ul class='outline'><li>Here's a <a href="https://www.nushell.sh/">nushell</a> oneliner for a sorted list of all your completed items:</li><li><br/></li><li>cat *.otl | lines | str trim -l | where {|x| $x =~ `\[X\] \d\d\d\d-\d\d-\d\d` } | sort | less</li></ul></li></ul>
+  
+  
+  </div>
+  
+  <div id='footer'>
+    <a type="application/atom+xml" rel="alternate" href="/feed.xml"><img src="/feed.png" alt="Atom feed"></a>
+    &nbsp;
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="/by-nc-sa.png" alt="cc-by-sa"></a>
+  
+  </div>
+  
+  </div>
+</body>
+</html>

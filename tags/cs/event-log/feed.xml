@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>rsaarelm blog: cs/event-log</title>
+  <link href="https://rsaarelm.github.io/tags/cs/event-log/"/>
+  <link href="https://rsaarelm.github.io/tags/cs/event-log/feed.xml" rel="self"/>
+  <updated>2023-03-23T00:00:00Z</updated>
+  <id>https://rsaarelm.github.io/tags/cs/event-log/</id>
+  
+  <entry>
+    <title>Reproducible gamestates</title>
+    <link href="https://rsaarelm.github.io/reproducible-gamestates"/>
+    <id>https://rsaarelm.github.io/reproducible-gamestates</id>
+    <updated>2023-03-23T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry>
+</feed>

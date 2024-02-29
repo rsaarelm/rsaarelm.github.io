@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+  
+  <title>  A short note on async Rust  </title>
+</head>
+
+<body>
+  <div id='main'>
+  <div id='content'>
+
+<header>
+  <a href="/">posts</a>
+  | <a href="/tags/">tags</a>
+  | <a href="/links/">links</a>
+</header>
+
+<h1 class="title">A short note on async Rust</h1>
+
+<div><em>Tags:
+<a href="/tags/cs/rust/">cs/rust</a>
+| 2023-10-30
+</em></div>
+
+<p>I procrastinated for years on figuring out what the deal with async Rust is.
+Here's what I wish I'd gotten to read right away.</p>
+<p>There is exactly one "magical" bit involved with async Rust and that's marking a function <code>async</code> and calling <code>await</code> from inside the async function.
+This will compile the body of the function into an anonymous state machine type that implements the <code>Future</code> trait.
+Calling an async function produces a <code>Future</code> value that implements the state machine for the function's body.
+It must be polled to run the function code.
+When the function's future is being executed via polling, an <code>await</code> call in the function code can suspend the execution, and it can then be resumed later with a new poll.</p>
+<p>The rest of how an async program works can be figured out in terms of regular Rust syntax and the various library types involved.</p>
+  
+  
+  
+  </div>
+  
+  <div id='footer'>
+    <a type="application/atom+xml" rel="alternate" href="/feed.xml"><img src="/feed.png" alt="Atom feed"></a>
+    &nbsp;
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="/by-nc-sa.png" alt="cc-by-sa"></a>
+  
+  </div>
+  
+  </div>
+</body>
+</html>

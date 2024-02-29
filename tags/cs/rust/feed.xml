@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>rsaarelm blog: cs/rust</title>
+  <link href="https://rsaarelm.github.io/tags/cs/rust/"/>
+  <link href="https://rsaarelm.github.io/tags/cs/rust/feed.xml" rel="self"/>
+  <updated>2023-10-30T00:00:00Z</updated>
+  <id>https://rsaarelm.github.io/tags/cs/rust/</id>
+  
+  <entry>
+    <title>Roguelike game architecture in Rust 1 - The utility layer</title>
+    <link href="https://rsaarelm.github.io/roguelike-architecture-in-rust-1"/>
+    <id>https://rsaarelm.github.io/roguelike-architecture-in-rust-1</id>
+    <updated>2015-03-21T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>Roguelike game architecture in Rust 2 - The game application</title>
+    <link href="https://rsaarelm.github.io/roguelike-architecture-in-rust-2"/>
+    <id>https://rsaarelm.github.io/roguelike-architecture-in-rust-2</id>
+    <updated>2015-03-22T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>Roguelike game architecture in Rust 3 - The entity component system</title>
+    <link href="https://rsaarelm.github.io/roguelike-architecture-in-rust-3"/>
+    <id>https://rsaarelm.github.io/roguelike-architecture-in-rust-3</id>
+    <updated>2015-03-23T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>Reproducible gamestates</title>
+    <link href="https://rsaarelm.github.io/reproducible-gamestates"/>
+    <id>https://rsaarelm.github.io/reproducible-gamestates</id>
+    <updated>2023-03-23T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>Implicit data markup</title>
+    <link href="https://rsaarelm.github.io/implicit-data-markup"/>
+    <id>https://rsaarelm.github.io/implicit-data-markup</id>
+    <updated>2023-04-22T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>The new blog engine</title>
+    <link href="https://rsaarelm.github.io/new-blog-engine"/>
+    <id>https://rsaarelm.github.io/new-blog-engine</id>
+    <updated>2023-05-15T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>Game system objects</title>
+    <link href="https://rsaarelm.github.io/game-system-objects"/>
+    <id>https://rsaarelm.github.io/game-system-objects</id>
+    <updated>2023-09-12T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>A short note on async Rust</title>
+    <link href="https://rsaarelm.github.io/async-rust"/>
+    <id>https://rsaarelm.github.io/async-rust</id>
+    <updated>2023-10-30T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry>
+</feed>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>rsaarelm blog: cs/vim</title>
+  <link href="https://rsaarelm.github.io/tags/cs/vim/"/>
+  <link href="https://rsaarelm.github.io/tags/cs/vim/feed.xml" rel="self"/>
+  <updated>2023-04-20T00:00:00Z</updated>
+  <id>https://rsaarelm.github.io/tags/cs/vim/</id>
+  
+  <entry>
+    <title>Outline notes introduction</title>
+    <link href="https://rsaarelm.github.io/outline-notes-intro"/>
+    <id>https://rsaarelm.github.io/outline-notes-intro</id>
+    <updated>2023-04-20T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry>
+</feed>

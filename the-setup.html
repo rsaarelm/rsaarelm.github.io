@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+  
+  <title>  The setup  </title>
+</head>
+
+<body>
+  <div id='main'>
+  <div id='content'>
+
+<header>
+  <a href="/">posts</a>
+  | <a href="/tags/">tags</a>
+  | <a href="/links/">links</a>
+</header>
+
+<h1 class="title">The setup</h1>
+
+<div><em>2024-02-26
+</em></div>
+
+<p>How I set up the computer in the objectively correct way.</p>
+<h2>Directory structure</h2>
+<p>Where does stuff go?</p>
+<h3><code>~/hearth/</code></h3>
+<p><a href="https://web.archive.org/web/20190202163008/https://0x46.net/thoughts/2019/02/01/dotfile-madness/">We are no longer in control of our home directories.</a>
+So I've set up a <code>~/hearth/</code> directory in the home directory that contains all the stuff I know I care about and have put there myself.
+Backing up should be a matter of taking a snapshot of <code>~/hearth/</code>.
+Most of the contents of the hearth directory are git repos for work projects and various personal logs and archives.</p>
+<h3>Project files</h3>
+<p>Programming projects are going to generate lots of object files, a Rust project can create multiple gigabytes of them, and none of them are of any interest for backups, so the work directories are going to be over at <code>~/work/</code>.
+What I do back up are the git repos, which are stored out-of-directory at <code>~/hearth/git/[PROJECT]</code> for <code>~/work/[PROJECT]</code>.</p>
+<p>You can set up a git project like this like so:</p>
+<pre><code>mkdir -p ~/work/PROJECT
+cd ~/work/PROJECT
+git init --separate-git-dir ~/hearth/git/PROJECT
+</code></pre>
+<h3>Media files</h3>
+<p>I use <a href="https://git-annex.branchable.com/">git-annex</a> to manage media.
+It has somewhat many moving parts and assumes you're comfortable with regular git.
+I use <code>git-annex addurl URL --file LOCALNAME</code> whenever I can to store images that are currently online and downloadable without additional hoop-jumping.
+The URLs may eventually bitrot, but as long as they haven't, my annex will be able to reacquire the file from the web.</p>
+<p>Media goes on the biggest hard drive on the machine, which may be different from where the OS root partition is installed.
+In this case, it should have its own mount point, something like <code>/vol/data0</code>.
+Use symlinks to point here from home dir.</p>
+<h4>Media folder structure</h4>
+<ul>
+<li><code>~/media/</code> git-annex root, may be a symlink to external disk volume
+<ul>
+<li><code>archive/</code> miscellaneous stuff like website dumps saved for posterity</li>
+<li><code>games/</code> installation files for old video games</li>
+<li><code>pics/</code> pictures from the internet, symlinked at <code>~/Pictures</code></li>
+<li><code>music/</code> symlinked at <code>~/Music</code></li>
+<li><code>video/</code> symlinked at <code>~/Videos</code></li>
+<li><code>doc/</code> PDF and DjVu books and articles, symlinked at <code>~/Documents</code>
+<ul>
+<li><code>3/</code> CGI and 3D modeling</li>
+<li><code>adv/</code> How-to books</li>
+<li><code>biz/</code> Business</li>
+<li><code>cog/</code> Cognitive science</li>
+<li><code>design/</code> Design and writing</li>
+<li><code>eng/</code> Engineering and architecture</li>
+<li><code>g/</code> Computing</li>
+<li><code>his/</code> History</li>
+<li><code>k/</code> Military</li>
+<li><code>lit/</code> Mainstream fiction
+<ul>
+<li><code>sf/</code> Science fiction</li>
+<li><code>fantasy/</code> Fantasy and horror</li>
+<li><code>fic/</code> Internet fics</li>
+</ul>
+</li>
+<li><code>misc/</code> Other nonfiction, usually popular books</li>
+<li><code>phi/</code> Philosophy</li>
+<li><code>pol/</code> Politics and sociology</li>
+<li><code>sci/</code> Science and mathematics</li>
+<li><code>tg/</code> Role-playing games</li>
+<li><code>v/</code> Video game development</li>
+<li><code>x/</code> Conspiracy, occult and paranormal</li>
+<li><code>epub/</code> EPUB docs, whole subdir is synced to smartphone, subdir structure mirrors one in <code>doc/</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Research projects get their own named folders under <code>doc/</code> that contain references.
+Since git-annex uses symlinks, the same document can be linked from several places from the file tree without taking up extra space.</p>
+<h3>Transient files</h3>
+<p>I probably won't be keeping every random file I download around forever.
+The nice thing would be to set up a periodic task that cleans up files older than 30 days from <code>~/tmp/</code>.
+I do a lazier thing and just put temporary stuff in the system <code>/tmp/</code> directory that gets wiped every time the machine boots.
+Also it gets wiped if the machine fails to wake up from suspend which happens every now and then with my desktop, or if I do something that gets the machine hanging badly enough that it needs to be rebooted, so it's not really ideal for anything that needs any degree of permanence beyond the immediate current session.</p>
+<h2>Dotfile management</h2>
+<p>I use the <a href="https://web.archive.org/web/20231125044053/https://www.kerrickstaley.com/2023/11/24/homegit">homegit idiom</a> for versioning my dotfiles.
+Tried and abandoned GNU stow (minor annoyances and a feature I wanted to use has had an unfixed bug for years) and Nix Home Manager (not usable without having Nix installed, overcomplicated).
+Homegit is dead simple, can be deployed anywhere where git is present and does what I need.</p>
+<p>Hosts that require local customizations to configs have a local branch that has the host changes in the top commit, this gets rebased anew when it needs changing.
+Most homegit changes I make on any host belong in the master branch, so wrote <a href="https://github.com/rsaarelm/dotfiles/blob/master/bin/homegit-shunt"><code>homegit-shunt</code></a> to move general feature commits made on top of the host branch up to the master branch with a single command.
+Updates can be pulled to customized hosts with <code>homegit pull origin master:master; homegit rebase master</code> without checking out of the host branch.</p>
+<h2>LAN host naming</h2>
+<p>Hosts are named after chemical elements, which are also used to derive static local IP addresses for them. The wireless address is the regular address + 100.
+Host <code>cobalt</code> would have alias <code>co</code>, be 192.168.1.27 over Ethernet and 192.168.1.127 over WiFi.
+Configuring hosts to have static IP addresses is annoying, so instead I still use DHCP and configure my router to assign the desired specific addresses based on connection MAC.</p>
+<h2>TODO</h2>
+<ul>
+<li>API key management</li>
+<li>Using <a href="https://restic.net/">restic</a> to back up <code>~/hearth</code>, backup recovery procedures</li>
+<li>Synchronizing <code>~/hearth</code> dirs with <a href="https://syncthing.net/">Syncthing</a></li>
+</ul>
+<h2>Programs</h2>
+<ul>
+<li><a href="https://nixos.org/">NixOS Linux</a> with a <a href="https://github.com/rsaarelm/dotfiles/tree/master/homegit">flake-based system configuration</a></li>
+<li><a href="https://neovim.io/">Neovim</a>. Might switch to <a href="https://helix-editor.com/">Helix</a> if it gets <a href="https://github.com/helix-editor/helix/issues/1840">folding support</a></li>
+<li><a href="https://i3wm.org/">i3wm</a>. Might switch to Wayland and Sway if I ever upgrade my ancient GPU to one that can run Wayland with fast drivers.</li>
+<li><a href="https://git-scm.com/">Git</a>. Out of all the weird fiddly alternative tools I really like, somehow Git ended up being used by everyone else as well.</li>
+<li><a href="https://fishshell.com/">fish shell</a> has good defaults out of the box.
+I tried <a href="https://www.nushell.sh/">nushell</a> but it felt a bit too clunky for a daily driver.</li>
+<li><a href="https://st.suckless.org/">st simple terminal</a> works great on a Raspberry Pi and on the janky desktop GPU that started glitching with Alacritty.
+You need to run things inside tmux if you want scrollback though.</li>
+<li><a href="https://weechat.org/">WeeChat</a> I've grudgingly gotten along with the times and now go to IRC in a WeeChat in tmux instead of an irssi in screen.</li>
+<li><a href="https://github.com/ajeetdsouza/zoxide">zoxide</a> better cd command</li>
+<li><a href="https://github.com/BurntSushi/ripgrep">ripgrep</a> better grep</li>
+<li><a href="https://networkmanager.dev/">NetworkManager</a> (<code>nmcli</code>) for connecting to WiFi</li>
+</ul>
+  
+  
+  
+  </div>
+  
+  <div id='footer'>
+    <a type="application/atom+xml" rel="alternate" href="/feed.xml"><img src="/feed.png" alt="Atom feed"></a>
+    &nbsp;
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="/by-nc-sa.png" alt="cc-by-sa"></a>
+  
+  </div>
+  
+  </div>
+</body>
+</html>

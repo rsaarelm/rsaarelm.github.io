@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/style.css">
+  
+  <title>  Roguelike game architecture in Rust 2 - The game application  </title>
+</head>
+
+<body>
+  <div id='main'>
+  <div id='content'>
+
+<header>
+  <a href="/">posts</a>
+  | <a href="/tags/">tags</a>
+  | <a href="/links/">links</a>
+</header>
+
+<h1 class="title">Roguelike game architecture in Rust 2 - The game application</h1>
+
+<div><em>Tags:
+<a href="/tags/cs/rust/">cs/rust</a>, <a href="/tags/games/dev/">games/dev</a>, <a href="/tags/deprecated/">deprecated</a>
+| 2015-03-22
+</em></div>
+
+<p>Continued from <a href="../roguelike-architecture-in-rust-1">part 1</a>.</p>
+<p>The <a href="https://github.com/rsaarelm/magog/">game project</a> is split into the toplevel application
+crate and a <code>world</code> library crate in a subdirectory. The world crate
+handles the game state and logic, while the main crate does user
+interface. It's something like a client/server architecture, though
+there isn't anything like a wire protocol between the two.</p>
+<p>The toplevel client crate has full access to the public interface of
+the world crate, but the world crate isn't aware of the toplevel.
+Most of the time this works fine. The client translates UI events
+into game actions, updates world state with the action and reads the
+current worldstate to know what to draw on screen. The worldstate
+only stores persistent objects like trees and chests though,
+transient things like sound effects and particle clouds that don't
+matter to the game logic beyond the fact that they got spawned don't
+live in the game state. Transient effects get passed to the toplevel
+as values in the <a href="https://github.com/rsaarelm/magog/blob/2365d6f4e5a318a28875d254ba2d5821ffc4e296/world/src/msg.rs">message queue</a> in the world crate.</p>
+<p>If I ever want to have NetHack style "Are you sure you want to stick
+your head in the Sphere of Annihilation Y/N" style confirmation
+dialogs that get tripped from within the world logic, I'm going to
+have new problems with figuring out the UI - world interaction.
+Though maybe I can just push functionality like that entirely into
+the UI side.</p>
+<h2>The screen state machine</h2>
+<p>The different screens in the game are implemented as state machine
+<a href="https://github.com/rsaarelm/magog/blob/2365d6f4e5a318a28875d254ba2d5821ffc4e296/src/main.rs#L31">states</a> that consume events from the backend and return
+state transition instructions. The <a href="https://github.com/rsaarelm/magog/blob/2365d6f4e5a318a28875d254ba2d5821ffc4e296/src/titlestate.rs">title screen state</a>
+is a very simple example that currently just renders the title
+screen. In the future, there will probably be some menu logic here
+to handle settings and save games. Most of the gameplay happens in
+the <a href="https://github.com/rsaarelm/magog/blob/2365d6f4e5a318a28875d254ba2d5821ffc4e296/src/gamestate.rs">gameplay state</a>. When the gameplay state is created,
+it initializes the global game world object and then starts running
+the game, displaying the game world and reading the user input. This
+object is a bit of a mess of responsibilities, and should probably
+split into multiple modules at some point.</p>
+<h2>The command loop</h2>
+<p>The inputs from the player to the game go through function
+<a href="https://github.com/rsaarelm/magog/blob/2365d6f4e5a318a28875d254ba2d5821ffc4e296/world/src/action.rs#L94"><code>action::input</code></a>. The player controls a single avatar
+character, which has its own speed of action. It won't act on every
+world update frame, so the client uses
+<a href="https://github.com/rsaarelm/magog/blob/2365d6f4e5a318a28875d254ba2d5821ffc4e296/world/src/action.rs#L71"><code>action::control_state</code></a> to find out whether it
+should try to come up with some player input or just update the
+world. When left to its own devices without a player expecting
+input, the world runs at 30 frames per second.</p>
+<p>Theoretically the game should run exactly the same every time it
+gets the same random number generator seed and player input
+sequence, to the point where these could be used as save game data,
+but I don't have tests in place to see if this is actually the case.</p>
+<p>The <code>action</code> module in the world crate is a general grab-bag of free
+functions that operate on the global world state.</p>
+<h2>The global world structure</h2>
+<p>With some hesitation about losing all the lovely referential
+transparency, I decided to just go ahead and put the mutable world
+state in a <a href="https://github.com/rsaarelm/magog/blob/2365d6f4e5a318a28875d254ba2d5821ffc4e296/world/src/world.rs">thread-local store</a> accessible from anywhere (as
+long as I stick to a single thread). This lets me stop worrying
+about just how the world reference should be carried over to every
+point that wants to know things about the global game state.
+Roguelikes are basically some simple display code you throw up in a
+weekend and then years and years of accrued rat's nest of world
+logic code that needs to know obscure things about dark corners of
+the game world deep in some logic path or another.</p>
+<p>It's also starting to become obvious at this point that the Rust
+borrow checker hates video games. If you implement the world
+structure naively, the first time you take a write reference to the
+world you stop being able to read anything else from the world. For
+example, you might want to do something like
+<code>world.do_mutable_stuff(world.do_immutable_query())</code>. Nope. Can't
+have mutable call's parameter be an immutable call to the same
+object. I don't know if there's a good reason here why the compiler
+doesn't just translate this into something like the <code>let x = world.do_immutable_query(); world.do_mutable_stuff(x);</code> form that I
+always end up typing by hand.</p>
+<p>It gets more fun. Worlds contain game entities. You'll want to go
+through them, run game logic for them and update them. Accessing the
+entities of a naively put together world structure gets the world
+locked. If you got a read lock, congrats, now you can't change the
+world state in any way while holding on to the entity. Maintaining a
+single write lock on the other hand becomes an ergonomical nightmare
+if you want to, say, call a method on an entity that wants to query
+the world state, another method that wants to mutate the world
+state, maybe call one method with the other's return value as its
+parameter and so on.</p>
+<h2>The world access pattern</h2>
+<p>After wondering whether the decision to try to write video game
+logic in Rust was one of those not very clever ideas to begin with,
+I came up with a pattern to manage things. The <code>Cell</code> that I use to
+implement the thread-local worldstate value does a runtime
+equivalent of borrow checking. As long as I make sure never attempt
+to borrow an already borrowed world, everything will work fine, and
+I can write high-level game code that doesn't get gimped by constant
+borrow checker issues.</p>
+<p>The way I ended up doing things is to push reading or changing
+things in the physical worldstate data structures as deep down into
+the call chain as I can, and only acquiring the Cell borrow when I
+absolutely must access the physical worldstate memory. At this point
+I push a closure past the borrow airlock using the <code>world::with</code> or
+<code>world::with_mut</code> functions. Once within the borrow, calling any
+other function that uses the airlock will probably cause a runtime
+panic, so the code inside the closure needs to be short and simple.
+Most of the time this works quite well, since the <code>with</code> code
+pattern is pretty distinct. The one thing I can't do is give the
+concrete datatypes that go in the world any sort of complex methods
+that interact with the high-level world logic, since those would end
+up calling other airlock functions and panic on me.</p>
+<p>Now I can have stuff like game entity handles, game world location
+values and the like, which can be passed around with no borrow locks
+and have interfaces that use the high level game logic that bottom
+out to pushing the actual physical gamestate data around. Though I
+also need to write some getter and setter type boilerplate code
+because I can't expose references to any of the internal data
+through the API.</p>
+  
+  
+  
+  </div>
+  
+  <div id='footer'>
+    <a type="application/atom+xml" rel="alternate" href="/feed.xml"><img src="/feed.png" alt="Atom feed"></a>
+    &nbsp;
+    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="/by-nc-sa.png" alt="cc-by-sa"></a>
+  
+  </div>
+  
+  </div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>rsaarelm blog: cs/blog</title>
+  <link href="https://rsaarelm.github.io/tags/cs/blog/"/>
+  <link href="https://rsaarelm.github.io/tags/cs/blog/feed.xml" rel="self"/>
+  <updated>2023-05-15T00:00:00Z</updated>
+  <id>https://rsaarelm.github.io/tags/cs/blog/</id>
+  
+  <entry>
+    <title>Static blog</title>
+    <link href="https://rsaarelm.github.io/static-blog"/>
+    <id>https://rsaarelm.github.io/static-blog</id>
+    <updated>2015-03-20T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>The new blog engine</title>
+    <link href="https://rsaarelm.github.io/new-blog-engine"/>
+    <id>https://rsaarelm.github.io/new-blog-engine</id>
+    <updated>2023-05-15T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry>
+</feed>

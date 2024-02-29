@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>rsaarelm blog: org</title>
+  <link href="https://rsaarelm.github.io/tags/org/"/>
+  <link href="https://rsaarelm.github.io/tags/org/feed.xml" rel="self"/>
+  <updated>2023-09-20T00:00:00Z</updated>
+  <id>https://rsaarelm.github.io/tags/org/</id>
+  
+  <entry>
+    <title>Outline notes introduction</title>
+    <link href="https://rsaarelm.github.io/outline-notes-intro"/>
+    <id>https://rsaarelm.github.io/outline-notes-intro</id>
+    <updated>2023-04-20T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>Implicit data markup</title>
+    <link href="https://rsaarelm.github.io/implicit-data-markup"/>
+    <id>https://rsaarelm.github.io/implicit-data-markup</id>
+    <updated>2023-04-22T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry><entry>
+    <title>Project outlines</title>
+    <link href="https://rsaarelm.github.io/project-outlines"/>
+    <id>https://rsaarelm.github.io/project-outlines</id>
+    <updated>2023-09-20T00:00:00Z</updated>
+    <summary type="html"></summary>
+  </entry>
+</feed>
