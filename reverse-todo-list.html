@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" media="(min-width:768px)" href="desktop.css" />
+  <link rel="stylesheet" media="(max-width:768px)" href="mobile.css" />
+  
+  <title>  Working with a reverse TODO list  </title>
+</head>
+
+<body>
+  <div id='page-layout'>
+  <header>
+    <a href=".">posts</a>
+    | <a href="links">links</a>
+  <h1 class="title">Working with a reverse TODO list</h1>
+  </header>
+  <main>
+
+
+<div><span class="status">2024-12-12 - 2024-12-31 |</span>
+  <a class="tag" href=".?tags=work">work</a>
+</div>
+
+<p>A <a href="https://www.ljwolf.org/posts/deepwork/">reverse TODO list</a> is a list of what you've done instead of what you should do.
+A regular TODO list suffers from the items growing stale as they're not done and the whole list becoming irrelevant when it ages.
+A reverse TODO list on the other hand will just naturally accumulate useful content whenever you do things and write down what you did.</p>
+<p>If you're tracking what you did using <a href="http://todotxt.org/">todo.txt</a> or <a href="project-outlines">outliner projects</a>, you can generate a unified done list automatically.
+Run something like</p>
+<pre><code>git grep -E '^(\s*\[X\]|x) [0-9]{4}-[0-9]{2}-[0-9]{2}' \
+  | sed -E 's/^([^:]*):[^0-9]*([0-9]{4}-[0-9]{2}-[0-9]{2}.*)/x \2  (\1)/' \
+  | sed 's/  (.*done.txt)$//g' \
+  | sort
+</code></pre>
+<p>in the terminal while in your (git-versioned) notes directory to find all entries with a date and a "done" checkmark, normalize them into todo.txt format and sort them into a chronological list that ends with your latest done things.</p>
+<p>You can also turn the commit log of a git repository into a reverse TODO list with</p>
+<pre><code>git log --pretty=format:"x %ad %s  ($(basename $PWD))" \
+  --date=format:"%Y-%m-%d" \
+  | sort
+</code></pre>
+<p>The usefulness of this depends on how cleanly your individual commits track meaningful completed tasks.
+(Thanks to <a href="https://dbohdan.com/">dbohdan</a> for this idea.)</p>
+<p>Is this going to be useful for actual work though?
+If you're planning to do something, it won't show up in the done list until you've already done it.
+It probably won't work very well for the sort of scattered checklist work where you need to do many simple things and the problem is remembering them all.
+I feel like it could be a lot more useful for project-style work that relies on context and momentum.</p>
+<p>The starting point for project work with a reverse list is that you need to do some concrete task you can log as done.
+You can't just stay stuck filling your regular TODO list, you need to come up with a starting point and actually do it to get the system going.
+This pushes you to come up with a small initial task that will advance the project instead of just writing down large, amorphous tasks.</p>
+<p>When you have logged the initial task, it will now show up at the bottom of your done list.
+You'll be looking at the tail of the done list daily, and if you have multiple projects going, you'll see the last things you did for them all as long as you've worked on them recently.
+If there's some larger goal you're trying to complete, just seeing the done items might suggest further work.
+Sometimes this is a no-brainer, if you're reading through a textbook, a done task for working through chapter 4 immediately suggests starting on chapter 5.
+Otherwise you might just get ideas from the summary snapshot of everything you've accomplished in the last week or two.
+You also get an organically evolving task window.
+Projects you don't work on will drop out of sight, while things that have momentum get more prominence.
+You can of course scroll further up the done list to find things from longer ago.</p>
+<p>Is this going to actually help as a productivity tool?
+Dunno, but it feels like it has a really nice property that it can't go bad on you and cause a backlash like a regular TODO list can when you get demotivated to work on it.
+With a reverse list, you just have the same natural list of what actually happened no matter what your headspace is.</p>
+  
+  
+  
+  <div id='footer'>
+    
+    <a href="https://github.com/rsaarelm/blog-engine/"><img height="15" src="git.svg" alt="site generator repository"></a>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="by-nc-sa.svg" alt="cc-by-sa"></a>
+  </div>
+  </main>
+  <aside></aside>
+  
+  </div>
+</body>
+</html>

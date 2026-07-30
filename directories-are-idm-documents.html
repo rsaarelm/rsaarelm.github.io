@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" media="(min-width:768px)" href="desktop.css" />
+  <link rel="stylesheet" media="(max-width:768px)" href="mobile.css" />
+  
+  <title>  Directories are IDM documents  </title>
+</head>
+
+<body>
+  <div id='page-layout'>
+  <header>
+    <a href=".">posts</a>
+    | <a href="links">links</a>
+  <h1 class="title">Directories are IDM documents</h1>
+  </header>
+  <main>
+
+
+<div><span class="status">2024-04-12 |</span>
+  <a class="tag" href=".?tags=idm">idm</a>
+</div>
+
+<p>This is a fun pattern for managing a program configuration document written in <a href="implicit-data-markup">IDM</a> that's complex enough to be split into multiple files.
+You don't need any extra syntax for including files, you can just directly turn any directory into an IDM document.</p>
+<p>Like a lot of things with IDM, you're expected to roll your own implementation here with whatever customizations you need, this is just the conceptual explanation.</p>
+<h2>Deserializing to IDM</h2>
+<p>Say you have a directory layout like this:</p>
+<pre><code>site/
+  links.idm
+  posts/
+    one-post.md
+    another-post.md
+</code></pre>
+<p>You can turn this into IDM by constructing the outline with the directory names printed verbatim, the file names printed with the extensions removed, and the contents of files indented under each file name headline:</p>
+<pre><code>links
+  Example bookmark
+    :uri https://example.com/
+posts
+  one-post
+    Lorem ipsum dolor sit amet,
+    consectetur adipiscing elit,
+  another-post
+    Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco
+</code></pre>
+<p>The deserialization target can be either a struct that expects a specific set of file or directory names, this makes sense for the site toplevel in the example, or a map that takes an arbitrary set of names.
+You want the map for the <code>posts</code> subdirectory, since the set of all post headlines isn't small fixed thing like {<code>posts</code>, <code>links</code>} for the site toplevel is.</p>
+<p>A caveat here is that files can use different indentation conventions.
+An IDM file can be indented with either physical tab characters or spaces.
+The combined outline needs to use a single indentation style everywhere, so files can't be just naively inserted in.
+So you'll need to reformat the indentations of each file to match the style of the outline when you read them in.
+(If IDM were updated to not allow physical tab indentation anymore, this problem would go away and you could include every file by just adding indentation to their lines.)</p>
+<p>The interface between files and directories looks pretty strict here.
+Either something is fully exploded into a directory, or it's fully stored in a file.
+What if you want to have a struct with a bunch of fiddly metadata settings that would be annoying to split into dozens of tiny files, but also a blob of content like a collection of blog posts that really should go in a separate file or an entire directory?
+The sensible option is to put the configurations below a separate <code>config</code> field and make that into a single IDM file.
+But you might also have a <code>foo.idm</code> file and a <code>foo/</code> subdirectory side-by-side.
+A simple way to handle them is to first output the contents of <code>foo.idm</code> under the <code>foo</code> headline and then output the contents of the <code>foo/</code> subdirectory after that in the outline being constructed.
+If you want to get fancier, you might overwrite the section with headline <code>bar</code> found in <code>foo.idm</code> if you later run into <code>foo/bar.idm</code> going through the directory, but it's simpler to just write your data so it won't have overlaps like this.</p>
+<h2>Serializing to a directory</h2>
+<p>So that's the deserialization, what about the other way around, writing the IDM serialization of a single value into a directory with files and subdirectories?
+You might not actually need to do this, IDM is used more for input than for output.
+One concrete application is what the generator for this website does, outputting the collection generated static HTML files.</p>
+<p>One thing to be aware of is that while all directories are IDM documents, all IDM documents are not directories.
+IDM can have the same headline repeating multiple times in the same outline, while a directory can only have one file with the given name.
+The order of the items in an IDM outline can also be significant, while the contents of a directory are generally not assumed to have a specific arbitrary order.</p>
+<p>Another problem with serialization is that there's nothing in a plain IDM outline to tell you that a part of it should be split off into its own file.
+The default way to output an outline is to just write it all to a single file.
+The way I do this with the website output is that you start out outputting directories, one per each headline encountered as you go down the outline.
+Then the signal to switch to a file is a headline that looks like a filename with an extension, that is, it has at least one period with text immediately after it, like <code>links.idm</code>.
+This will cause the file <code>links.idm</code> to be generated, with everything under the headline deindented and stored as file contents.
+A hackier thing the web page outputter does is to "flatten" fields that start with an underscore, a <code>_posts</code> field does not cause the subdirectory <code>_posts</code> to be created, instead all of its contents are printed out at the current directory level.</p>
+<p>The web page generator does asymmetric deserialization and serialization, the IDM formatted website is only deserialized, and the static HTML website is only serialized.
+The main task of the site generator is to do type conversion between the two.
+There's also a case for loading a complex IDM config from a directory into memory, modifying it, and then saving it back in the same IDM format.
+For a collection of outlines, you'd want the directory loader to preserve the file extensions for the file names and make sure no subdirectories in your collection have names with periods in them so they can be distinguished from file names.
+For a struct, you could use Serde's rename attributes for fields you want to output as separate files,</p>
+<pre><code>#[serde(rename(serialize = "links.idm"))]
+links: LinkList</code></pre>
+  
+  
+  
+  <div id='footer'>
+    
+    <a href="https://github.com/rsaarelm/blog-engine/"><img height="15" src="git.svg" alt="site generator repository"></a>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="by-nc-sa.svg" alt="cc-by-sa"></a>
+  </div>
+  </main>
+  <aside></aside>
+  
+  </div>
+</body>
+</html>

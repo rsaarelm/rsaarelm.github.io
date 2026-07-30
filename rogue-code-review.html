@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" media="(min-width:768px)" href="desktop.css" />
+  <link rel="stylesheet" media="(max-width:768px)" href="mobile.css" />
+  
+  <title>  Code review: Rogue  </title>
+</head>
+
+<body>
+  <div id='page-layout'>
+  <header>
+    <a href=".">posts</a>
+    | <a href="links">links</a>
+  <h1 class="title">Code review: Rogue</h1>
+  </header>
+  <main>
+
+
+<div><span class="status">2013-11-17 - 2024-09-05 |</span>
+  <a class="tag" href=".?tags=roguelike">roguelike</a><span class="status">, </span><a class="tag" href=".?tags=code-review">code-review</a>
+</div>
+
+<p><em>This is migrated from the pre-blog roguereview project.</em></p>
+<p>Notes on Rogue Clone 5.3, a BSD-licensed clone of the original Rogue written by
+Tim Stoehr.</p>
+<p>The main function is impressively simple.</p>
+<pre><code>if (init(argc, argv)) {    /* restored game */
+  goto PL;
+}
+
+for (;;) {
+  clear_level();
+  make_level();
+  put_objects();
+  put_stairs();
+  add_traps();
+  put_mons();
+  put_player(party_room);
+  print_stats(STAT_ALL);
+PL:
+  play_level();
+  free_stuff(&amp;level_objects);
+  free_stuff(&amp;level_monsters);
+}
+</code></pre>
+<p>It just loops the map creation and gameplay over and over.
+Though maybe the <code>make_level</code> to <code>put_mons</code> sequence of level generation should be under a single function to keep a consistent level of abstraction.</p>
+<h2>Source code overview</h2>
+<pre><code>     1      3     21 rogue/patchlevel.h
+   450   1419  10268 rogue/rogue.h
+   650   1891  11545 rogue/curses.c
+   417   1093   7896 rogue/hit.c
+   280    695   5017 rogue/init.c
+    67    113   1037 rogue/instruct.c
+   465   1213   8988 rogue/inventory.c
+   840   2471  17518 rogue/level.c
+   594   2643  16653 rogue/machdep.c
+    64    146   1127 rogue/main.c
+   323    855   5626 rogue/message.c
+   828   2195  17882 rogue/monster.c
+   540   1415   9758 rogue/move.c
+   773   2267  16368 rogue/object.c
+   519   1273   9779 rogue/pack.c
+   247    496   3840 rogue/play.c
+   105    302   1840 rogue/random.c
+   288    797   5692 rogue/ring.c
+   424   1323   8628 rogue/room.c
+   415   1241  10196 rogue/save.c
+   538   1543  10347 rogue/score.c
+   500   1320   9964 rogue/spec_hit.c
+   287    868   6033 rogue/throw.c
+   247    787   5280 rogue/trap.c
+   578   1541  11639 rogue/use.c
+   224    603   4704 rogue/zap.c
+ 10664  30513 217646 total
+</code></pre>
+<h3><code>rogue.h</code></h3>
+<p>Global defines. Common data structures.</p>
+<h3><code>curses.c</code></h3>
+<p>Low-level interface code goes here. Mostly game-agnostic.</p>
+<h3><code>hit.c</code></h3>
+<p>Combat.
+The damage values are actually "3d6" style dice roll strings, which is cute.
+Also kinda stupid and makes them hard to generate procedurally.</p>
+<h3><code>init.c</code></h3>
+<p>Startup code.</p>
+<p>Player gen actually sets up all the properties of the player's equipment,
+instead of using a general factory system so this part could set up the player with initial equipment that isn't found anywhere elsewhere in the game.</p>
+<h3><code>instruct.c</code></h3>
+<p>Help text file pager. Very simple.</p>
+<h3><code>inventory.c</code></h3>
+<p>Wand and gem type strings. Scroll syllables here.</p>
+<p>Func <code>inventory</code> is the UI for showing inventory.</p>
+<p>Then there's the random unid'd title generation.
+I guess because the module also handles the display.</p>
+<p>Then there's a complex function for generating the string description for an item.</p>
+<h3><code>level.c</code></h3>
+<p>Map generation here. There's the 9-room mapgen in a 3x3 grid.</p>
+<p>Also leveling up, for whatever reason.</p>
+<h3><code>machdep.c</code></h3>
+<p>System dependent code.</p>
+<p><code>md_slurp</code>: Clear keyboard input buffer</p>
+<p><code>md_control_keyboard</code>: Configuring which input sequences get through.
+Some terminal arcana here.</p>
+<p>Functions to map interrupt, quit and hangup signals to game functions.
+Interrupt is used to stop autorest and autofight.</p>
+<p>Some file status operations.
+Reading time for save games.
+Reading environment variables.
+Also malloc, interestingly.</p>
+<p>Seeding the RNG, this one uses process id, which seems kinda weak.</p>
+<h3><code>main.c</code></h3>
+<p>Here's the pretty main game loop, very little anything else.</p>
+<h3><code>message.c</code></h3>
+<p>Printing the message sting.
+No varargs.</p>
+<p>Reading an input string.</p>
+<p>Printing the stats string, with a nice visualization comment:</p>
+<pre><code>Level: 99 Gold: 999999 Hp: 999(999) Str: 99(99) Arm: 99 Exp: 21/10000000 Hungry
+0    5    1    5    2    5    3    5    4    5    5    5    6    5    7    5
+</code></pre>
+<p>You don't have stats beyond hp and strength, so this is pretty complete.
+Doesn't show your weapon damage though.</p>
+<p>Using a pad function instead of the printf format strings for numbers.
+I guess because that won't work when you have a pair of numbers you want to right-justify.</p>
+<p>There's also a (text file) screenshot function here.</p>
+<h3><code>monster.c</code></h3>
+<p>The table of monster names and stats.
+Stats aren't tabulated or annotated in any way, so tricky to read.
+Also how does this work, the structs don't actually seem to have all the fields?</p>
+<p>Some creatures have two damage values, like "1d3/1d2".</p>
+<p>Wandering monsters can be created in roam mode.</p>
+<p>Top monster AI seems to be <code>mv_mons</code>.
+It mixes iterating through the monsters and running the toplevel AI.
+Dispatches to <code>mv_monster</code> that does more detailed move logic.
+Monsters seem to just home in on the player by default, <code>mv_monster</code> gets player pos as arguments.</p>
+<p><code>party_monsters</code> creates a bunch of monsters in one room.</p>
+<p><code>mv_monster</code> wakeup logic, figuring out where to move.
+Wakeup involves player proximity and <code>stealthy</code> variable.
+Stealth means player invisibility maybe?</p>
+<p>Functions for waking individual monsters and all monsters in a room.</p>
+<p>There's a whole separate <code>wanderer</code> function for the non-attacking monsters.</p>
+<p>Mixing UI with logic with <code>show_monsters</code>.</p>
+<p>There's no complex line of sight.
+Monsters see everything in the same room and everything next to them elsewhere.
+So the rooms and corridors design is actually a big deal, mechanics wise,
+not just the corridors being basically narrower rooms.</p>
+<p>Also there's a separate function <code>mv_aquatars</code>,
+which seems to be called before the player removes armor or weapons.
+So aquatars get singled out specifically so that they can get a shot at equipment ruining before the player can stow it away.</p>
+<h3><code>move.c</code></h3>
+<p>Player movement.</p>
+<p><code>one_move_rogue</code> is the toplevel player movement command, which does the smart attack,
+handling confusion and teleportitis and the works.
+Long move is <code>multiple_move_rogue</code>.
+The direction values are just the default movement key codes.</p>
+<p>Hunger check is here.
+I guess because it's part of player update tick.</p>
+<p><code>reg_move</code> updates monsters and status effects.</p>
+<h3><code>object.c</code></h3>
+<p>A bit mixed.
+There's the player object, the ID data for the various item types.</p>
+<p><code>put_objects</code> places the items.
+Makes them with <code>gr_object</code>.
+Global <code>cur_level</code> is used for depth.</p>
+<p><code>gr_object</code> decides what to generate, then generates some.
+Item generation doesn't seem to depend on current level.</p>
+<p>It finds objects at a give position with <code>object_at</code> by just iterating the entire list and returning the first one with given coords.
+It takes the starter object as parameter, so you can repeat the call with that object to get further objects.
+Clever.</p>
+<p><code>make_party</code> seems to be for creating a batch of new random monsters periodically on the current map.</p>
+<h3><code>pack.c</code></h3>
+<p>Inventory and item handling.
+Special logic hooked to the functions, like a scare monster scroll turning to dust if you drop it and pick it up again.
+(The scrolls on the ground stop monsters from entering the cell, so having them freely movable would make them multi-use.)</p>
+<p>You can't drop items in cells that already have an item.
+The intrusive linked list pattern should let you have item stacks pretty easily.
+Maybe they're an user interface headache.</p>
+<p>A lot of UI stuff mixed with the logic again.</p>
+<h3><code>play.c</code></h3>
+<p>Toplevel gameplay function <code>play_level</code>.</p>
+<p>It's a big switch-statement for a getch.
+Hardcoded letters.</p>
+<h3><code>random.c</code></h3>
+<p>There's a custom random number generator.
+Nothing particularly interesting, and the utility functions are pretty simple.</p>
+<h3><code>ring.c</code></h3>
+<p>Ring items.
+These grant you persistent effects.
+<code>put_on_ring</code> is the command to wear one.
+<code>ring_stats</code> resets the ring-relevant effects, then applies them based on the rings the player is wearing.
+I think this needs to assume that nothing else than a ring can affect any of those variables.</p>
+<h3><code>room.c</code></h3>
+<p>Rooms are a special thing in Rogue.</p>
+<p>Dungeon is the actual tile map.
+I think the map memory might be just the screen buffer...
+At least that's the only way I see <code>draw_magic_map</code> updating visible stuff.
+Though the dungeon tiles do have a <code>HIDDEN</code> flag.</p>
+<p><code>dr_course</code> is some kind of monster pathfinding routine.
+Could maybe use a bit more comments to figure out just what the deal is.</p>
+<h3><code>save.c</code></h3>
+<p>A nice look into the overall state.
+There's a bunch of floating global variables that need to get manually shoved into savefiles,
+like all the player status ailments.
+I'm guessing monsters can't get debuffs then.</p>
+<p>Other than that, saving and loading is pretty simple.
+Most everything is flat data except the object chains.
+The chains are just written linearly.
+When reading the chain, it checks for stuff flagged as player equipment and equips it.</p>
+<p>Functions with <code>rw_</code> prefix can be parameterized to either read or write,
+so you can use the same code for both saving and loading a game.
+A bit like the pattern Boost::Serialize uses much later.</p>
+<h3><code>score.c</code></h3>
+<p>End game stuff.
+Death and victory messages.
+Printing score.</p>
+<h3><code>spec_hit.c</code></h3>
+<p>Status effects from monsters here.
+<code>special_hit</code> is the starting point function.</p>
+<p>When the player gets frozen, there's just a loop calling <code>mv_mons</code>.
+Nothing more complex for mucking with the update timing system.</p>
+<p>Other special behavior like monsters going for gold on the ground also here (<code>seek_gold</code>).</p>
+<h3><code>throw.c</code></h3>
+<p>The player throwing items.
+Starting point function <code>throw</code>.
+Complex mix of interface, gamestate queries and update logic again.
+Can only throw in the main movement directions.</p>
+<p>You can throw daggers, shuriken or darts, or arrows if you're wielding a bow.
+The weapon types are hardcoded in <code>throw_at_monster</code>.
+Appropriate weapons do more damage and hit better.</p>
+<p>There's a complicated function <code>flop_weapon</code> for finding a spot for the object that falls on the ground.
+Apparently there needs to be free space, you can't just have the thing fall down in the same cell a monster is occupying.</p>
+<h3><code>trap.c</code></h3>
+<p>Traps are stateful, there's a table of them, and the location lookup is done using <code>trap_at</code>.
+I guess ADOM does one cleverer here, by determining trap type from position hash function,
+so it can have the traps as pretty much stateless terrain.
+There doesn't seem to be anything to the trap data beyond the type and the position.</p>
+<p>Traps only get created in rooms, as usual for the rooms/corridors dynamic.</p>
+<h3><code>use.c</code></h3>
+<p>Using perishables.
+Potions, scrolls, food.
+Identification code here too.</p>
+<p>Hallucination just operates on the screen buffer and turns item and monster characters on screen into random characters.</p>
+<p><code>relight</code> repaints the screen.</p>
+<h3><code>zap.c</code></h3>
+<p>Zapping wands.
+These give status effects to monsters.
+<code>zap_monster</code> is the effect function.</p>
+<h2>Data structures</h2>
+<p>Both monsters and items use <code>struct object</code>.
+The source calls items 'objects', but also uses the 'object' type for both monsters and items.
+Confusing.
+The fields have different meanings for items.
+There are defines that map the item item names into the monster names.
+Ugly.</p>
+<p>The struct has a pointer to the next object/monster.
+Maybe both monsters and items are in the same list, and this is the reason for the duality.</p>
+<p>The player is represented by <code>struct fighter</code>.
+The inventory is <code>object pack</code> (not a pointer, interestingly).
+Equipment slots are object pointers in the struct.
+The whole player character has a simple enough data model to be represented with the struct.</p>
+<p>Other structs: <code>id</code>, <code>door</code>, <code>room</code>.
+Door and room are maybe used in mapgen? <code>trap</code> consist of type and position.</p>
+<p>Global variables:</p>
+<ul>
+<li><code>rogue</code>: The player</li>
+<li><code>rooms</code></li>
+<li><code>traps</code></li>
+<li><code>dungeon</code>: The level map, <code>unsigned short</code></li>
+<li><code>level_objects</code>: An object value, this uses the intrusive list then.</li>
+</ul>
+<p>There are id arrays for scrolls, potions, wands, rings, weapons and armors.
+The id struct has string buffers for the unidentified and identified names.
+Also a value field, seems like what it'd cost at a shop or something.
+It seems to be for score here.</p>
+<ul>
+<li><code>mon_tab</code>: Prototypes for monster creation.
+These are objects, so this uses the prototype pattern I guess.</li>
+<li><code>level_monsters</code>: An object value.
+Like <code>level_objects</code>.</li>
+</ul>
+  
+  
+  
+  <div id='footer'>
+    
+    <a href="https://github.com/rsaarelm/blog-engine/"><img height="15" src="git.svg" alt="site generator repository"></a>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="by-nc-sa.svg" alt="cc-by-sa"></a>
+  </div>
+  </main>
+  <aside></aside>
+  
+  </div>
+</body>
+</html>

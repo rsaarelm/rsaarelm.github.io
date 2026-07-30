@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" media="(min-width:768px)" href="desktop.css" />
+  <link rel="stylesheet" media="(max-width:768px)" href="mobile.css" />
+  <link href="feed.xml" type="application/atom+xml" rel="alternate"/>
+<script type="module">
+import { processParams, clickify } from "./view.js";
+
+window.addEventListener("load", event => {
+  processParams();
+  clickify();
+});
+
+window.addEventListener("popstate", processParams);
+</script>
+  <title> rsaarelm&#x27;s blog </title>
+</head>
+
+<body>
+  <div id='page-layout'>
+  <header>
+    <a id="banner-here"href=".">posts</a>
+    | <a href="links">links</a>
+  <h1 class="title">rsaarelm&#x27;s blog</h1>
+  </header>
+  <main>
+
+<ul class="links">
+  <li class="link_item" id="reverse-todo-list">
+    <p>
+    <a href="reverse-todo-list" >Working with a reverse TODO list</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#reverse-todo-list">2024-12-12</a> <a class="tag tag_work" href="?tags=work">work</a></p>
+  
+  </li>
+  <li class="link_item" id="directories-are-idm-documents">
+    <p>
+    <a href="directories-are-idm-documents" >Directories are IDM documents</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#directories-are-idm-documents">2024-04-12</a> <a class="tag tag_idm" href="?tags=idm">idm</a></p>
+  
+  </li>
+  <li class="link_item" id="the-setup">
+    <p>
+    <a href="the-setup" >The setup</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#the-setup">2024-02-26</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_admin" href="?tags=admin">admin</a></p>
+  
+  </li>
+  <li class="link_item" id="async-rust">
+    <p>
+    <a href="async-rust" >A short note on async Rust</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#async-rust">2023-10-30</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_rust" href="?tags=rust">rust</a></p>
+  
+  </li>
+  <li class="link_item" id="new-blog-engine">
+    <p>
+    <a href="new-blog-engine" >The new blog engine</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#new-blog-engine">2023-05-15</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_blog" href="?tags=blog">blog</a>, <a class="tag tag_rust" href="?tags=rust">rust</a>, <a class="tag tag_idm" href="?tags=idm">idm</a></p>
+  
+  </li>
+  <li class="link_item" id="project-outlines">
+    <p>
+    <a href="project-outlines" >Project outlines</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#project-outlines">2023-05-02</a> <a class="tag tag_notetaking" href="?tags=notetaking">notetaking</a>, <a class="tag tag_outliners" href="?tags=outliners">outliners</a></p>
+  
+  </li>
+  <li class="link_item" id="implicit-data-markup">
+    <p>
+    <a href="implicit-data-markup" >Implicit data markup</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#implicit-data-markup">2023-04-22</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_rust" href="?tags=rust">rust</a>, <a class="tag tag_idm" href="?tags=idm">idm</a>, <a class="tag tag_notetaking" href="?tags=notetaking">notetaking</a></p>
+  
+  </li>
+  <li class="link_item" id="outline-notes-intro">
+    <p>
+    <a href="outline-notes-intro" >Outline notes introduction</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#outline-notes-intro">2023-04-20</a> <a class="tag tag_notetaking" href="?tags=notetaking">notetaking</a>, <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_outliners" href="?tags=outliners">outliners</a>, <a class="tag tag_wiki" href="?tags=wiki">wiki</a>, <a class="tag tag_vim" href="?tags=vim">vim</a></p>
+  
+  </li>
+  <li class="link_item" id="lucid-dream-induction-protocol">
+    <p>
+    <a href="lucid-dream-induction-protocol" >Lucid dream induction protocol</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#lucid-dream-induction-protocol">2023-04-15</a> <a class="tag tag_lucid-dreaming" href="?tags=lucid-dreaming">lucid-dreaming</a></p>
+  
+  </li>
+  <li class="link_item" id="reproducible-gamestates">
+    <p>
+    <a href="reproducible-gamestates" >Reproducible gamestates</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#reproducible-gamestates">2023-03-23</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_gamedev" href="?tags=gamedev">gamedev</a>, <a class="tag tag_rust" href="?tags=rust">rust</a>, <a class="tag tag_event-log" href="?tags=event-log">event-log</a></p>
+  
+  </li>
+  <li class="link_item" id="game-system-objects">
+    <p>
+    <a href="game-system-objects" >Game system objects</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#game-system-objects">2023-03-21</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_gamedev" href="?tags=gamedev">gamedev</a>, <a class="tag tag_rust" href="?tags=rust">rust</a></p>
+  
+  </li>
+  <li class="link_item" id="1993">
+    <p>
+    <a href="1993" >1993</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#1993">2023-03-18</a> </p>
+  
+  </li>
+  <li class="link_item" id="roguelike-architecture-in-rust-3">
+    <p>
+    <a href="roguelike-architecture-in-rust-3" >Roguelike game architecture in Rust 3 - The entity component system</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#roguelike-architecture-in-rust-3">2015-03-23</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_gamedev" href="?tags=gamedev">gamedev</a>, <a class="tag tag_rust" href="?tags=rust">rust</a>, <a class="tag tag_deprecated" href="?tags=deprecated">deprecated</a></p>
+  
+  </li>
+  <li class="link_item" id="roguelike-architecture-in-rust-2">
+    <p>
+    <a href="roguelike-architecture-in-rust-2" >Roguelike game architecture in Rust 2 - The game application</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#roguelike-architecture-in-rust-2">2015-03-22</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_gamedev" href="?tags=gamedev">gamedev</a>, <a class="tag tag_rust" href="?tags=rust">rust</a>, <a class="tag tag_deprecated" href="?tags=deprecated">deprecated</a></p>
+  
+  </li>
+  <li class="link_item" id="roguelike-architecture-in-rust-1">
+    <p>
+    <a href="roguelike-architecture-in-rust-1" >Roguelike game architecture in Rust 1 - The utility layer</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#roguelike-architecture-in-rust-1">2015-03-21</a> <a class="tag tag_computing" href="?tags=computing">computing</a>, <a class="tag tag_gamedev" href="?tags=gamedev">gamedev</a>, <a class="tag tag_rust" href="?tags=rust">rust</a>, <a class="tag tag_deprecated" href="?tags=deprecated">deprecated</a></p>
+  
+  </li>
+  <li class="link_item" id="static-blog">
+    <p>
+    <a href="static-blog" >Static blog</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#static-blog">2015-03-20</a> <a class="tag tag_blog" href="?tags=blog">blog</a>, <a class="tag tag_deprecated" href="?tags=deprecated">deprecated</a></p>
+  
+  </li>
+  <li class="link_item" id="powder-code-review">
+    <p>
+    <a href="powder-code-review" >Code review: POWDER</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#powder-code-review">2013-12-10</a> <a class="tag tag_roguelike" href="?tags=roguelike">roguelike</a>, <a class="tag tag_code-review" href="?tags=code-review">code-review</a></p>
+  
+  </li>
+  <li class="link_item" id="hack-code-review">
+    <p>
+    <a href="hack-code-review" >Code review: Hack</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#hack-code-review">2013-12-06</a> <a class="tag tag_roguelike" href="?tags=roguelike">roguelike</a>, <a class="tag tag_code-review" href="?tags=code-review">code-review</a></p>
+  
+  </li>
+  <li class="link_item" id="dungeon-bash-code-review">
+    <p>
+    <a href="dungeon-bash-code-review" >Code review: Martin&#x27;s Dungeon Bash</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#dungeon-bash-code-review">2013-11-19</a> <a class="tag tag_roguelike" href="?tags=roguelike">roguelike</a>, <a class="tag tag_code-review" href="?tags=code-review">code-review</a></p>
+  
+  </li>
+  <li class="link_item" id="rogue-code-review">
+    <p>
+    <a href="rogue-code-review" >Code review: Rogue</a>
+    
+    
+    </p>
+    <p class="status"><a class="date" href="#rogue-code-review">2013-11-17</a> <a class="tag tag_roguelike" href="?tags=roguelike">roguelike</a>, <a class="tag tag_code-review" href="?tags=code-review">code-review</a></p>
+  
+  </li>
+</ul>
+  
+  <div id='footer'>
+    <a type="application/atom+xml" rel="alternate" href="feed.xml"><img height="15" src="feed.svg" alt="Atom feed"></a>
+    <a href="https://github.com/rsaarelm/blog-engine/"><img height="15" src="git.svg" alt="site generator repository"></a>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="by-nc-sa.svg" alt="cc-by-sa"></a>
+  </div>
+  </main>
+  <aside>
+<p class="tagcloud screen-only">
+<nobr><a class="tag tag_admin tagrank_0" href="?tags=admin">admin</a></nobr>
+
+<nobr><a class="tag tag_blog tagrank_1" href="?tags=blog">blog</a></nobr>
+
+<nobr><a class="tag tag_code-review tagrank_1" href="?tags=code-review">code-review</a></nobr>
+
+<nobr><a class="tag tag_computing tagrank_2" href="?tags=computing">computing</a></nobr>
+
+<nobr><a class="tag tag_deprecated tagrank_1" href="?tags=deprecated">deprecated</a></nobr>
+
+<nobr><a class="tag tag_event-log tagrank_0" href="?tags=event-log">event-log</a></nobr>
+
+<nobr><a class="tag tag_gamedev tagrank_1" href="?tags=gamedev">gamedev</a></nobr>
+
+<nobr><a class="tag tag_idm tagrank_1" href="?tags=idm">idm</a></nobr>
+
+<nobr><a class="tag tag_lucid-dreaming tagrank_0" href="?tags=lucid-dreaming">lucid-dreaming</a></nobr>
+
+<nobr><a class="tag tag_notetaking tagrank_1" href="?tags=notetaking">notetaking</a></nobr>
+
+<nobr><a class="tag tag_outliners tagrank_1" href="?tags=outliners">outliners</a></nobr>
+
+<nobr><a class="tag tag_roguelike tagrank_1" href="?tags=roguelike">roguelike</a></nobr>
+
+<nobr><a class="tag tag_rust tagrank_2" href="?tags=rust">rust</a></nobr>
+
+<nobr><a class="tag tag_vim tagrank_0" href="?tags=vim">vim</a></nobr>
+
+<nobr><a class="tag tag_wiki tagrank_0" href="?tags=wiki">wiki</a></nobr>
+
+<nobr><a class="tag tag_work tagrank_0" href="?tags=work">work</a></nobr>
+
+</p>
+</aside>
+  
+  </div>
+</body>
+</html>

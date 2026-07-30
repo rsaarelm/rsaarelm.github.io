@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" media="(min-width:768px)" href="desktop.css" />
+  <link rel="stylesheet" media="(max-width:768px)" href="mobile.css" />
+  
+  <title>  A short note on async Rust  </title>
+</head>
+
+<body>
+  <div id='page-layout'>
+  <header>
+    <a href=".">posts</a>
+    | <a href="links">links</a>
+  <h1 class="title">A short note on async Rust</h1>
+  </header>
+  <main>
+
+
+<div><span class="status">2023-10-30 |</span>
+  <a class="tag" href=".?tags=computing">computing</a><span class="status">, </span><a class="tag" href=".?tags=rust">rust</a>
+</div>
+
+<p>I procrastinated for years on figuring out what the deal with async Rust is.
+Here's what I wish I'd gotten to read right away.</p>
+<p>There is exactly one "magical" bit involved with async Rust and that's marking a function <code>async</code> and calling <code>await</code> from inside the async function.
+This will compile the body of the function into an anonymous state machine type that implements the <code>Future</code> trait.
+Calling an async function produces a <code>Future</code> value that implements the state machine for the function's body.
+It must be polled to run the function code.
+When the function's future is being executed via polling, an <code>await</code> call in the function code can suspend the execution, and it can then be resumed later with a new poll.</p>
+<p>The rest of how an async program works can be figured out in terms of regular Rust syntax and the various library types involved.</p>
+  
+  
+  
+  <div id='footer'>
+    
+    <a href="https://github.com/rsaarelm/blog-engine/"><img height="15" src="git.svg" alt="site generator repository"></a>
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="by-nc-sa.svg" alt="cc-by-sa"></a>
+  </div>
+  </main>
+  <aside></aside>
+  
+  </div>
+</body>
+</html>

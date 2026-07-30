@@ -1,0 +1,188 @@
+@font-face {
+    font-family: 'Intel One Mono';
+    src: url('./IntelOneMono-Regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Clear Sans';
+    src: url('./ClearSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Clear Sans';
+    src: url('./ClearSans-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Clear Sans';
+    src: url('./ClearSans-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Clear Sans';
+    src: url('./ClearSans-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+}
+
+#page-layout {
+    display: grid;
+    grid-template-columns: 1fr minmax(min-content, 40rem) 1fr;
+    grid-template-rows: auto auto;
+    float: none;
+    margin: 0;
+    padding: 0;
+}
+
+#page-layout header {
+    background-color: white;
+    grid-column: 2;
+    grid-row: 1;
+    float: none;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+#page-layout main {
+    background-color: white;
+    grid-column: 2;
+    grid-row: 2;
+    float: none;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+#page-layout aside {
+    max-width: 30rem;
+    grid-column: 3;
+    grid-row: 2;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+code {
+    font-family: "Intel One Mono", monospace;
+    color: darkslategray;
+}
+pre {
+    margin-left: 1em;
+    max-width: 100%;
+    overflow-x: auto;
+    font-size: 0.8rem;
+}
+
+a { text-decoration: none; }
+a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.5rem;
+}
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1.05rem; }
+h4 { font-size: 0.90rem; }
+header { text-align: center; }
+ul { list-style: disc; padding-inline-start: 1em; }
+body {
+    background-color: #DDD;
+    font-family: "Clear Sans", sans-serif;
+    line-height: 1.4;
+    margin: 0;
+}
+blockquote {
+  border-left: 5px solid #ccc;
+  margin: 1em 10px;
+  padding: 0em 10px;
+}
+.status { color: gray; font-size: smaller; }
+
+.inactive { color: gray; }
+a.inactive:hover { text-decoration: none; }
+
+.date { color: gray; }
+.site { color: gray; font-size: smaller; }
+.site:hover { cursor: pointer; text-decoration: underline; text-decoration-thickness: from-font; }
+
+.tag { color: brown; }
+
+.tagrank_0 { color: #988; font-size: 0.7em; }
+.tagrank_1 { color: brown; font-size: 0.8em; }
+.tagrank_2 { color: brown; }
+.tagrank_3 { color: brown; font-size: 1.2em; text-transform: uppercase; }
+
+.tag:hover { cursor: pointer; text-decoration: underline; text-decoration-thickness: from-font; }
+
+.link_item { list-style-type: none; margin-bottom: 4px; }
+.links { padding: 0; }
+.preview { margin-left: 1em; font-size: smaller; }
+.outline {
+  list-style-type: none;
+  padding-left: 1em;
+  margin-left: 0em;
+  text-indent: -1em;
+}
+
+.link_item p { margin: 0; margin-bottom: 2px; }
+p.preview { margin: initial; }
+
+.tagcloud { text-align: justify }
+
+.link_item:target {
+    background-color: wheat;
+}
+
+ /* Dark mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #222;
+        color: #bbb;
+    }
+
+    code {
+        color: #89a;
+    }
+
+    .tag { color: tomato; }
+
+    .tagrank_0 { color: brown; font-size: 0.8em; }
+    .tagrank_1 { color: tomato; font-size: 0.8em; }
+    .tagrank_2 { color: tomato; }
+    .tagrank_3 { color: lightcoral; }
+
+    #page-layout header {
+        background-color: #111;
+    }
+    #page-layout main {
+        background-color: #111;
+    }
+
+    a {
+        color: #4da6ff;
+    }
+
+    .link_item:target {
+        background-color: #321;
+    }
+}
+
+@media print {
+  .screen-only { display: none; }
+
+  a.bookmark::after {
+      content: " <"attr(href)">";
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+      overflow-wrap: break-word;
+      color: black;
+  }
+}
